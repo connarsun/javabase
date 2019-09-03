@@ -69,7 +69,7 @@
 
 ------
 
-### 数据结构
+### 容器
 
 #### comparator和comparable 区别
 
@@ -279,7 +279,7 @@
 
 #### 线程的生命周期
 
-![thread](image\thread.png)
+![thread](javabase\image\thread.png)
 
 - 新建(new)，就绪(Runable) ,运行(Runing)，阻塞(Bloked),死亡(Dead) 5种状态
 
@@ -344,3 +344,304 @@
 
 #### notify()和 notifyAll()有什么区别？
 
+
+
+
+
+
+
+### 反射 ###
+
+#### 什么是反射？
+
+* Java反射就是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意方法和属性；并且能改变它的属性。而这也是Java被视为动态语言的一个关键性质。
+
+* **得到 Class 的三种方式**
+
+  * 通过对象调用 getClass() 方法来获取
+
+     通常应用在：比如你传过来一个 Object 类型的对象，而我不知道你具体是什么类，用这种方法
+    　　Person p1 = new Person();
+    　　Class c1 = p1.getClass();
+
+  * 直接通过 类名.class 的方式得到,该方法最为安全可靠，程序性能更高
+      这说明任何一个类都有一个隐含的静态成员变量 class
+    　　Class c2 = Person.class;
+
+  * 通过 Class 对象的 forName() 静态方法来获取，用的最多，
+     但可能抛出 ClassNotFoundException 异常
+    　　Class c3 = Class.forName("com.ys.reflex.Person");
+
+* 通过 Class 类获取成员变量、成员方法、接口、超类、构造方法等
+
+   查阅 API 可以看到 Class 有很多方法：
+
+  * getName()：获得类的完整名字。
+  * getFields()：获得类的public类型的属性。
+  * getDeclaredFields()：获得类的所有属性。包括private 声明的和继承类
+  * getMethods()：获得类的public类型的方法。
+  * getDeclaredMethods()：获得类的所有方法。包括private 声明的和继承类
+  * getMethod(String name, Class[] parameterTypes)：获得类的特定方法，name参数指定方法的名字，parameterTypes 参数指定方法的参数类型。
+  * getConstructors()：获得类的public类型的构造方法。
+  * getConstructor(Class[] parameterTypes)：获得类的特定构造方法，parameterTypes 参数指定构造方法的参数类型。
+  * newInstance()：通过类的不带参数的构造方法创建这个类的一个对象。
+
+#### 什么是 java 序列化？什么情况下需要序列化？
+
+* 序列化：将 Java 对象转换成字节流的过程。
+
+* 反序列化：将字节流转换成 Java 对象的过程
+
+* 当 Java 对象需要在网络上传输 或者 持久化存储到文件中时，就需要对 Java 对象进行序列化处理。
+
+  序列化的实现：类实现 Serializable 接口，这个接口没有需要实现的方法。实现 Serializable 接口是为了告诉 jvm 这个类的对象可以被序列化。
+
+  注意事项：
+
+  * 某个类可以被序列化，则其子类也可以被序列化
+  * 声明为 static 和 transient 的成员变量，不能被序列化。static 成员变量是描述类级别的属性，transient 表示临时数据
+  * 反序列化读取序列化对象的顺序要保持一致
+
+#### 动态代理是什么？有哪些应用？
+
+动态代理：在运行时，创建目标类，可以调用和扩展目标类的方法。
+
+应用场景如：
+
+- 统计每个 api 的请求耗时
+- 统一的日志输出
+- 校验被调用的 api 是否已经登录和权限鉴定
+- Spring的 AOP 功能模块就是采用动态代理的机制来实现切面编程
+
+#### 怎么实现动态代理？
+
+Java 中实现动态的方式：[JDK 中的动态代理](https://blog.csdn.net/meism5/article/details/90744045) 和 [Java类库 CGLib](https://blog.csdn.net/meism5/article/details/90781518)。
+
+**JDK代理必须要提供接口，而CGLIB则不需要，可以直接代理类**
+
+### jsp 和 servlet 有什么区别？
+
+* jsp更擅长表现于页面显示,servlet更擅长于[逻辑控制](https://www.baidu.com/s?wd=逻辑控制&tn=SE_PcZhidaonwhc_ngpagmjz&rsv_dl=gh_pc_zhidao).
+* Servlet中没有内置对象，Jsp中的内置对象都是必须通过HttpServletRequest对象，HttpServletResponse对象以及HttpServlet对象得到.
+* Jsp是Servlet的一种简化，使用Jsp只需要完成程序员需要输出到客户端的内容，Jsp中的Java脚本如何镶嵌到一个类中，由Jsp容器完成。
+
+### jsp 有哪些内置对象？作用分别是什么？
+
+* **request**：表示HttpServletRequest对象，用户端请求。它包含了有关浏览器请求的信息，并且提供了几个用于获取cookie, header, 和session数据的有用的方法。
+
+* **response**：表示HttpServletResponse对象，并提供了几个用于设置送回 浏览器的响应的方法（如cookies,头信息等），网页传回用户端的回应
+
+* **out**：对象是javax.jsp.JspWriter的一个实例，并提供了几个方法使你能用于向浏览器回送输出结果。
+
+* **pageContext：**表示一个javax.servlet.jsp.PageContext对象。该对象提供了对JSP页面内所有的对象及名字空间（就是四大作用域空间，如page空间、request空间、session空间、application空间）的访问，也就是说他可以访问到当前请求对应session中保存的信息，也可以取当前应用所在的application的某一属性值，它相当于页面中所有功能的集大成者，包装了通用的servlet相关功能的方法。**
+
+* **session：**表示一个请求的javax.servlet.http.HttpSession对象。Session可以存贮用户的状态信息
+
+* **applicaton：**表示一个javax.servle.ServletContext对象。类似于系统的全局变量，用于实现Web应用中的资源共享。
+
+* **config：**表示一个javax.servlet.ServletConfig对象。用于存放JSP编译后的初始数据。
+
+* **page：**表示从该页面产生的一个servlet实例，JSP网页本身
+
+* **exception：**针对错误网页，未捕捉的例外。表示JSP页面运行时产生的异常和错误信息，该对象只有在错误页面（page指令中设定isErrorPage为true的页面）中才能够使用。
+
+* 常用内置对象:
+
+  1. 输出输入对象:request对象、response对象、out对象
+
+  2. 通信控制对象:pageContext对象、session对象、application对象
+
+  3. Servlet对象:page对象、config对象
+
+  4. 错误处理对象:exception对象
+
+### 说一下 jsp 的 4 种作用域？
+
+pageContext, request, session、application四个作用域中
+
+* 如果把变量放到pageContext里，就说明它的作用域是page，它的有效范围只在当前jsp页面里。 从把变量放到pageContext开始，到jsp页面结束，你都可以使用这个变量。
+
+* 如果把变量放到request里，就说明它的作用域是request，它的有效范围是当前请求周期。所谓请求周期，就是指从http请求发起，到服务器处理结束，返回响应的整个过程。在这个过程中可能使用forward的方式跳转了多个jsp页面，在这些页面里你都可以使用这个变量。
+
+* 如果把变量放到session里，就说明它的作用域是session，它的有效范围是当前会话。所谓当前会话，就是指从用户打开浏览器开始，到用户关闭浏览器这中间的过程。这个过程可能包含多个请求响应。也就是说，只要用户不关浏览器，服务器就有办法知道这些请求是一个人发起的，整个过程被称为一个会话（session），而放到会话中的变量，
+
+* 如果把变量放到application里，就说明它的作用域是application，它的有效范围是整个应用。整个应用是指从应用启动，到应用结束。我们没有说“从服务器启动，到服务器关闭”是因为一个服务器可能部署多个应用，当然你关闭了服务器，就会把上面所有的应用都关闭了。application作用域里的变量，它们的存活时间是最长的，如果不进行手工删除，它们就一直可以使用。与上述三个不同的是，application里的变量可以被所有用户共用。如果用户甲的操作修改了application中的变量，用户乙访问时得到的是修改后的值。这在其他scope中都是不会发生的，page, request, session都是完全隔离的，无论如何修改都不会影响其他
+
+### session 和 cookie 有什么区别？
+
+* session存储在服务器端，cookie是存储在客户端，
+
+* session 可以存储任意对象，cookie只能存储string类型
+* Session过多时会消耗服务器资源，大型网站会有专门Session服务器，Cookie存在客户端对服务器没影响
+* Session在整个网页都有效，Cookie通过设置指定作用域只能在指定作用域有效
+* 关闭网页Session就结束了。Cookie可以通过 setMaxAge设置有效时间，即使浏览器关闭了仍然存在
+
+### 说一下 session 的工作原理？
+
+### 如果客户端禁止 cookie 能实现 session 还能用吗？
+
+### spring mvc 和 struts 的区别是什么？
+
+### 如何避免 sql 注入？
+
+* **采用预编译语句集**，它内置了处理SQL注入的能力，只要使用它的setString方法传值即可
+  * String sql= "select * from users where username=? and password=?";
+    PreparedStatement preState = conn.prepareStatement(sql);
+    preState.setString(1, userName);
+    preState.setString(2, password);
+    ResultSet rs = preState.executeQuery();
+
+* **采用正则表达式**将包含有 单引号(')，分号(;) 和 注释符号(--)的语句给替换掉来防止SQL注入
+
+  public static String TransactSQLInjection(String str)
+
+  {
+
+  ```
+    return str.replaceAll(".*([';]+|(--)+).*", " ");
+  ```
+
+  }
+
+  userName=TransactSQLInjection(userName);
+
+  password=TransactSQLInjection(password);
+
+  String sql="select * from users where username='"+userName+"' and password='"+password+"' "
+
+  Statement sta = conn.createStatement();
+
+  ResultSet rs = sta.executeQuery(sql);
+
+* 使用Hibernate框架的SQL注入防范 Hibernate是目前使用最多的ORM框架，在Java Web开发中，很多时候不直接使用JDBC，而使用Hibernate来提高开发效率。
+
+### 什么是 XSS 攻击，如何避免？
+
+XSS（Cross Site Scripting），即跨站脚本攻击，是一种常见于web应用程序中的计算机安全漏洞.XSS通过在用户端注入恶意的可运行脚本，若服务器端对用户输入不进行处理，直接将用户输入输出到浏览器，然后浏览器将会执行用户注入的脚本
+
+#### XSS 分类
+
+根据攻击的来源，XSS 攻击可分为存储型、反射型和 DOM 型三种。
+
+| 类型       | 存储区*                 | 插入点*         |
+| :--------- | :---------------------- | :-------------- |
+| 存储型 XSS | 后端数据库              | HTML            |
+| 反射型 XSS | URL                     | HTML            |
+| DOM 型 XSS | 后端数据库/前端存储/URL | 前端 JavaScript |
+
+  举例：
+
+有一个input输入框，需要用户输入名字，用户却输入一个恶意脚本，<script>alert(document.cookie)</script>，
+
+或者用户输入一个HTML，在标签中嵌入恶意脚本，如src，href，css style等。如：<IMG SRC="javascript:alert('XSS');">;
+                                                                                                             <BODY BACKGROUND="javascript:alert('XSS')">
+
+防御：
+
+* XSS防御的总体思路是：**对输入(和URL参数)进行过滤，对输出进行编码**。
+
+* 对输入和URL参数进行过滤(白名单和黑名单)
+
+### 什么是 CSRF 攻击，如何避免？
+
+ CSRF（Cross-site request forgery）跨站请求伪造：攻击者诱导受害者进入第三方网站，在第三方网站中，向被攻击网站发送跨站请求。利用受害者在被攻击网站已经获取的注册凭证，绕过后台的用户验证，达到冒充用户对被攻击的网站执行某项操作的目的。
+
+一个典型的CSRF攻击有着如下的流程：
+
+- 受害者登录a.com，并保留了登录凭证（Cookie）。
+- 攻击者引诱受害者访问了b.com。
+- b.com 向 a.com 发送了一个请求：a.com/act=xx。浏览器会默认携带a.com的Cookie。
+- a.com接收到请求后，对请求进行验证，并确认是受害者的凭证，误以为是受害者自己发送的请求。
+- a.com以受害者的名义执行了act=xx。
+- 攻击完成，攻击者在受害者不知情的情况下，冒充受害者，让a.com执行了自己定义的操作。
+
+#### 几种常见的攻击类型：
+
+- GET类型的CSRF：
+
+  GET类型的CSRF利用非常简单，只需要一个HTTP请求，一般会这样利用：
+
+  ```
+   <img src="http://bank.example/withdraw?amount=10000&for=hacker" >
+  ```
+
+  在受害者访问含有这个img的页面后，浏览器会自动向`http://bank.example/withdraw?account=xiaoming&amount=10000&for=hacker`发出一次HTTP请求。bank.example就会收到包含受害者登录信息的一次跨域请求。
+
+- POST类型的CSRF：
+
+  这种类型的CSRF利用起来通常使用的是一个自动提交的表单，如：
+
+  ```
+   <form action="http://bank.example/withdraw" method=POST>
+      <input type="hidden" name="account" value="xiaoming" />
+      <input type="hidden" name="amount" value="10000" />
+      <input type="hidden" name="for" value="hacker" />
+  </form>
+  <script> document.forms[0].submit(); </script>
+  ```
+
+  访问该页面后，表单会自动提交，相当于模拟用户完成了一次POST操作。
+
+  POST类型的攻击通常比GET要求更加严格一点，但仍并不复杂。任何个人网站、博客，被黑客上传页面的网站都有可能是发起攻击的来源，后端接口不能将安全寄托在仅允许POST上面。
+
+- 链接类型的CSRF
+
+  链接类型的CSRF并不常见，比起其他两种用户打开页面就中招的情况，这种需要用户点击链接才会触发。这种类型通常是在论坛中发布的图片中嵌入恶意链接，或者以广告的形式诱导用户中招，攻击者通常会以比较夸张的词语诱骗用户点击，例如：
+
+  ```
+    <a href="http://test.com/csrf/withdraw.php?amount=1000&for=hacker" taget="_blank">
+    重磅消息！！
+    <a/>
+  ```
+
+   防御策略：
+
+  - 阻止不明外域的访问
+    - 同源检测
+    - Samesite Cookie
+  - 提交时要求附加本域才能获取的信息
+    - CSRF Token
+    - 双重Cookie验证
+
+### 异常
+
+#### throw 和 throws 的区别？
+
+* throws出现在方法函数头；而throw出现在函数体。
+
+* throws表示出现异常的一种可能性，并不一定会发生这些异常；throw则是抛出了异常，执行
+
+  throw则一定抛出了某种异常对象。
+
+* 两者都是消极处理异常的方式（这里的消极并不是说这种方式不好），只是抛出或者可能抛出异常，但是不会由函数去处理异常，真正的处理异常由函数的上层调用处理。
+  
+
+#### final、finally、finalize 有什么区别？
+
+* final表示一个修饰符
+  	修饰一个类，该类不能被继承。
+  	修饰一个方法，该方法不能被重写。
+  	修饰一个变量，该变量一旦赋值后不能修改。
+
+* finally用于异常处理
+  	它用于修饰一个代码块，即使前面的代码处理异常，该代码块中的代码也会执行。通常用于释放资源
+
+* finalize表示Object类中的定义的一个方法，它可以重写，用于回收资源。
+
+#### try-catch-finally 中哪个部分可以省略？
+
+
+
+#### try-catch-finally 中，如果 catch 中 return 了，finally 还会执行吗？
+
+* 不管有无异常，只要存在finally，那么finally均会执行，且finally中有return时，会返回finally中return的值，且finally是在return之后执行的，只是会把finally之前的return的值保存起来，等运行结束后再进行返回
+
+#### 常见的异常类有哪些？
+
+* Error异常以及Exception异常，Excption又分为一般异常和常见异常，Exception一般为代码逻辑异常，通常使用try-catch-finally来对其进行捕获，而Error异常一般是JVM异常，通常情况下是不可捕获处理，难以恢复的异常。 
+  一般常见异常为：
+  * 空指针异常：NullException –>通常出现在调用了未初始化的对象，导致程序找不到该对象的地址造成的异常
+  * 内存溢出：OutOfMemoryExcpetion–>通常出现在当前占用的内存资源加上申请的内存资源超过了虚拟机最大内存限制的时候就会抛出这个异常，百分之八十的内存溢出都是Bitmap加载大图片以及数组对象使用不当造成。
+  * 强制转换异常：ClassCastException–>通常出现在类与类之间进行强制转换时，抛的异常。比如将TextView强制转换为Button时，就会抛该异常
+  * 数组越界异常：ArrayIndexException–>通常出现在使用数组时，调用了超出数组自身长度的item，导致抛出该异常
+  * 程序无响应异常：Application Not Responding –>通常出现在主线程中有太多的耗时操作，或者按键超过5秒未响应，广播超过10s未完成运行等。
