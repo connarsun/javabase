@@ -1,3 +1,7 @@
+---
+typora-root-url: image
+---
+
 [TOC]
 
 ------
@@ -7,7 +11,8 @@
 #### 类加载顺序,执行顺序
 
 - 父类的静态字段——>父类静态代码块——>子类静态字段——>子类静态代码块——>
-- 父类成员变量（非静态字段）——>父类非静态代码块——>父类构造器——>子类成员变量——>子类非静态代码块——>子类构造器   
+
+  父类成员变量（非静态字段）——>父类非静态代码块——>父类构造器——>子类成员变量——>子类非静态代码块——>子类构造器   
 
 #### java 中 IO 流分为几种
 
@@ -295,7 +300,7 @@
 
 - 方式二，通过 Runnable 接口创建线程类。
 
-- 方式三，通过 Callable 和 Future 创建线程。
+- 方式三，通过 Callable 接口和 Future 创建线程。
 
   ***创建线程的三种方式的对比：***
 
@@ -640,8 +645,131 @@ XSS（Cross Site Scripting），即跨站脚本攻击，是一种常见于web应
 
 * Error异常以及Exception异常，Excption又分为一般异常和常见异常，Exception一般为代码逻辑异常，通常使用try-catch-finally来对其进行捕获，而Error异常一般是JVM异常，通常情况下是不可捕获处理，难以恢复的异常。 
   一般常见异常为：
-  * 空指针异常：NullException –>通常出现在调用了未初始化的对象，导致程序找不到该对象的地址造成的异常
-  * 内存溢出：OutOfMemoryExcpetion–>通常出现在当前占用的内存资源加上申请的内存资源超过了虚拟机最大内存限制的时候就会抛出这个异常，百分之八十的内存溢出都是Bitmap加载大图片以及数组对象使用不当造成。
-  * 强制转换异常：ClassCastException–>通常出现在类与类之间进行强制转换时，抛的异常。比如将TextView强制转换为Button时，就会抛该异常
-  * 数组越界异常：ArrayIndexException–>通常出现在使用数组时，调用了超出数组自身长度的item，导致抛出该异常
-  * 程序无响应异常：Application Not Responding –>通常出现在主线程中有太多的耗时操作，或者按键超过5秒未响应，广播超过10s未完成运行等。
+  * NullPointerException 空指针异常
+  * ClassNotFoundException 指定类不存在
+  * NumberFormatException 字符串转换为数字异常
+  * IndexOutOfBoundsException 数组下标越界异常
+  * ClassCastException 数据类型转换异常
+  * FileNotFoundException 文件未找到异常
+  * NoSuchMethodException 方法不存在异常
+  * IOException IO 异常
+  * SocketException Socket 异常
+
+### MyBatis
+
+####  MyBatis 编程步骤
+
+* 创建 SqlSessionFactory 对象。
+
+* 通过 SqlSessionFactory 获取 SqlSession 对象。
+* 通过 SqlSession 获得 Mapper 代理对象。
+* 通过 Mapper 代理对象，执行数据库操作。
+* 执行成功，则使用 SqlSession 提交事务。
+* 执行失败，则使用 SqlSession 回滚事务。
+* 最终，关闭会话。
+
+####  `{}` 和 `${}` 的区别是什么？
+
+`${}` 是 Properties 文件中的变量占位符，它可以用于 XML 标签属性值和 SQL 内部，属于**字符串替换**。例如将 `${driver}` 会被静态替换为 `com.mysql.jdbc.Driver` ：
+
+```
+<dataSource type="UNPOOLED">   
+<property name="driver" value="${driver}"/> 
+<property name="url" value="${url}"/>
+<property name="username" value="${username}"/>
+</dataSource>
+```
+
+`${}` 也可以对传递进来的参数**原样拼接**在 SQL 中。代码如下：
+
+```
+<select id="getSubject3" parameterType="Integer" resultType="Subject"> 
+SELECT * FROM subject    WHERE id = ${id}
+</select>
+```
+
+- 实际场景下，不推荐这么做。因为，可能有 SQL 注入的风险。
+
+------
+
+`#{}` 是 SQL 的参数占位符，Mybatis 会将 SQL 中的 `#{}` 替换为 `?` 号，在 SQL 执行前会使用 PreparedStatement 的参数设置方法，按序给 SQL 的 `?` 号占位符设置参数值，比如 `ps.setInt(0, parameterValue)` 。 所以，`#{}` 是**预编译处理**，可以有效防止 SQL 注入，提高系统安全性。
+
+------
+
+另外，`#{}` 和 `${}` 的取值方式非常方便。例如：`#{item.name}` 的取值方式，为使用反射从参数对象中，获取 `item` 对象的 `name` 属性值，相当于 `param.getItem().getName()` 。
+
+#### Mybatis 动态 SQL 是做什么的？都有哪些动态 SQL ？能简述一下动态 SQL 的执行原理吗？
+
+- Mybatis 动态 SQL ，可以让我们在 XML 映射文件内，以 XML 标签的形式编写动态 SQL ，完成逻辑判断和动态拼接 SQL 的功能。
+- Mybatis 提供了 9 种动态 SQL 标签：
+  * `<if />`
+  * `<choose />`
+  * `<when />`
+  * `<otherwise />`
+  * `<trim />`
+  * `<where />`
+  * `<set />`
+  * <foreach />`
+  * `<bind />` 
+- 其执行原理为，使用 **OGNL** 的表达式，从 SQL 参数对象中计算表达式的值，根据表达式的值动态拼接 SQL ，以此来完成动态 SQL 的功能。
+
+#### Mapper 接口，对应的关系如下：
+
+- 接口的全限名，就是映射文件中的 `"namespace"` 的值。
+
+- 接口的方法名，就是映射文件中 MappedStatement 的 `"id"` 值。
+
+- 接口方法内的参数，就是传递给 SQL 的参数。
+
+  Mapper 接口是没有实现类的，当调用接口方法时，接口全限名 + 方法名拼接字符串作为 key 值，可唯一定位一个对应的 MappedStatement 。举例：`com.mybatis3.mappers.StudentDao.findStudentById` ，可以唯一找到 `"namespace"` 为 `com.mybatis3.mappers.StudentDao` 下面 `"id"` 为 `findStudentById` 的 MappedStatement 。
+
+#### Mapper 接口绑定有几种实现方式,分别是怎么实现的?
+
+接口绑定有三种实现方式：
+
+第一种，通过 **XML Mapper** 里面写 SQL 来绑定。在这种情况下，要指定 XML 映射文件里面的 `"namespace"` 必须为接口的全路径名。
+
+第二种，通过**注解**绑定，就是在接口的方法上面加上 `@Select`、`@Update`、`@Insert`、`@Delete` 注解，里面包含 SQL 语句来绑定。
+
+第三种，是第二种的特例，也是通过**注解**绑定，在接口的方法上面加上 `@SelectProvider`、`@UpdateProvider`、`@InsertProvider`、`@DeleteProvider` 注解，通过 Java 代码，生成对应的动态 SQL 
+
+#### Mybatis 是否支持延迟加载？如果支持，它的实现原理是什么？
+
+Mybatis 仅支持 association 关联对象和 collection 关联集合对象的延迟加载。其中，association 指的就是**一对一**，collection 指的就是**一对多查询**。
+
+在 Mybatis 配置文件中，可以配置 `<setting name="lazyLoadingEnabled" value="true" />` 来启用延迟加载的功能。默认情况下，延迟加载的功能是**关闭**的。
+
+### Jvm
+
+####  `Roots`对象有哪些？
+* 引用栈帧中的本地变量表的所有对象；
+* 引用方法区中静态属性的所有对象；
+* 引用方法区中常量的所有对象；
+* 引用Native方法的所有对象。
+
+#### 方法区如何判断是否需要回收
+
+- 堆中不存在该类的任何实例
+- 加载该类的classloader已经被回收
+- 该类的java.lang.Class对象没有在任何地方被引用，也就是说无法通过反射再带访问该类的信息
+
+四类引用的区别就在于GC时是否回收该对象
+
+- - 强引用(Strong) 就是我们平时使用的方式 A a = new A();强引用的对象是不会被回收的
+  - 软引用(Soft) 在jvm要内存溢出(OOM)时，会回收软引用的对象，释放更多内存
+  - 弱引用(Weak) 在下次GC时，弱引用的对象是一定会被回收的
+  - 虚引用(Phantom) 对对象的存在时间没有任何影响，也无法引用对象实力，唯一的作用就是在该对象被回收时收到一个系统通知
+
+####  什么是类加载器
+
+负责读取 Java 字节代码，并转换成`java.lang.Class`类的一个实例；
+
+#### 双亲委派模型
+
+类加载器 Java 类如同其它的 Java 类一样，也是要由类加载器来加载的；除了启动类加载器，每个类都有其父类加载器（父子关系由组合（不是继承）来实现）；
+
+所谓双亲委派是指每次收到类加载请求时，先将请求委派给父类加载器完成（所有加载请求最终会委派到顶层的Bootstrap ClassLoader加载器中），如果父类加载器无法完成这个加载（该加载器的搜索范围中没有找到对应的类），子类尝试自己加载。
+
+
+
+![](F:\Git\winchain.uplp\javabase\image\879896-20160415085506488-408997874.png)
