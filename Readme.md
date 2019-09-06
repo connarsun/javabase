@@ -1,5 +1,5 @@
 ---
-typora-root-url: image
+typora-root-url: ./
 ---
 
 [TOC]
@@ -772,4 +772,4 @@ Mybatis 仅支持 association 关联对象和 collection 关联集合对象的�
 
 
 
-![](F:\Git\winchain.uplp\javabase\image\879896-20160415085506488-408997874.png)
+![](image\879896-20160415085506488-408997874.png)
