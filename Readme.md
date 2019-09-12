@@ -456,13 +456,13 @@ Java 中实现动态的方式：[JDK 中的动态代理](https://blog.csdn.net/m
 
 * 常用内置对象:
 
-  1. 输出输入对象:request对象、response对象、out对象
+  * 输出输入对象:request对象、response对象、out对象
 
-  2. 通信控制对象:pageContext对象、session对象、application对象
+  * 通信控制对象:pageContext对象、session对象、application对象
 
-  3. Servlet对象:page对象、config对象
+  * Servlet对象:page对象、config对象
 
-  4. 错误处理对象:exception对象
+  * 错误处理对象:exception对象
 
 ### 说一下 jsp 的 4 种作用域？
 
@@ -819,3 +819,63 @@ Java类加载器是Java运行时环境的一部分，负责动态加载Java类�
 3、**初始化**：为类的静态变量赋予正确的初始值，上述的准备阶段为静态变量赋予的是虚拟机默认的初始值，此处赋予的才是程序编写者为变量分配的真正的初始值
 
 现在java程序的执行就可以分为
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Spring
+
+#### 4 张图带你读懂 Spring IoC 的世界
+
+**1. Bean 的转换过程**
+
+![](/img/365d4142eb23822dcaddba6d1f59ccbc.png)
+
+##### 2.ApplicationContext 的架构图
+
+![](/img/dde0bf4ae9014ec73c80f4c45045850a.png)
+
+# 
+
+##### 3.load BeanDefinition 的全流程
+
+![](/img/38419d23d29c83a4758f73f85281e076.png)
+
+
+
+
+
+##### 4. get Bean 的全流程
+
+![](/img/3a5b28a2d3bd435ca94ea5c8752609d5.png)
