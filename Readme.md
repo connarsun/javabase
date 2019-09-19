@@ -16,7 +16,47 @@ typora-root-url: ./
 
 #### java 中 IO 流分为几种
 
+ **Java中IO流的体系结构如图：**
+
+![](/img/20160421004203974.png)
+
+Java I/O主要包括如下几个层次，包含三个部分：
+
+  **1.流式部分**――IO的主体部分；
+
+  **2.非流式部分**――主要包含一些辅助流式部分的类，如：File类、RandomAccessFile类和FileDescriptor等类；
+
+  **3.其他类**--文件读取部分的与安全相关的类，如：SerializablePermission类，以及与本地操作系统相关的文件系统的类，如：FileSystem类和Win32FileSystem类和WinNTFileSystem类。
+
+  主要的类如下：
+
+​     1. File（文件特征与管理）：用于文件或者目录的描述信息，例如生成新目录，修改文件名，删除文件，判断文件所在路径等。
+
+​     2. InputStream（二进制格式操作）：抽象类，基于字节的输入操作，是所有输入流的父类。定义了所有输入流都具有的共同特征。
+
+​     3. OutputStream（二进制格式操作）：抽象类。基于字节的输出操作。是所有输出流的父类。定义了所有输出流都具有的共同特征。
+
+​     4.Reader（文件格式操作）：抽象类，基于字符的输入操作。
+
+​     5. Writer（文件格式操作）：抽象类，基于字符的输出操作。
+
+​     6. RandomAccessFile（随机文件操作）：一个独立的类，直接继承至Object.它的功能丰富，**可以从文件的任意位置进行存取（输入输出）操作**。
+
 - 2种，一种字节流，另外一种字符流，分别有四个抽象类表示InputStream,OutputStream,Reader,Writer
+
+**从数据来源或者说是操作对象角度看，IO 类可以分为：**
+
+- 1、文件（file）：FileInputStream、FileOutputStream、FileReader、FileWriter
+- 2、数组（[]）：
+  - 2.1、字节数组（byte[]）：ByteArrayInputStream、ByteArrayOutputStream
+  - 2.2、字符数组（char[]）：CharArrayReader、CharArrayWriter
+- 3、管道操作：PipedInputStream、PipedOutputStream、PipedReader、PipedWriter
+- 4、基本数据类型：DataInputStream、DataOutputStream
+- 5、缓冲操作：BufferedInputStream、BufferedOutputStream、BufferedReader、BufferedWriter
+- 6、打印：PrintStream、PrintWriter
+- 7、对象序列化反序列化：ObjectInputStream、ObjectOutputStream
+- 8、转换：InputStreamReader、OutputStreWriter
+- 9、~~字符串（String）~~**Java8中已废弃**：~~StringBufferInputStream、StringBufferOutputStream、StringReader、StringWriter~~
 
 #### BIO、NIO、AIO 有什么区别
 
@@ -83,6 +123,30 @@ typora-root-url: ./
 * **如何对 Object 的 List 排序？**
   - 对 `Object[]` 数组进行排序时，我们可以用 `Arrays#sort(...)` 方法。
   - 对 `List<Object>` 数组进行排序时，我们可以用 `Collections#sort(...)` 方法。
+
+#### 1. Set
+
+- TreeSet：基于红黑树实现，支持有序性操作，例如根据一个范围查找元素的操作。但是查找效率不如 HashSet，HashSet 查找的时间复杂度为 O(1)，TreeSet 则为 O(logN)。
+- HashSet：基于哈希表实现，支持快速查找，但不支持有序性操作。并且失去了元素的插入顺序信息，也就是说使用 Iterator 遍历 HashSet 得到的结果是不确定的。
+- LinkedHashSet：具有 HashSet 的查找效率，且内部使用双向链表维护元素的插入顺序。
+
+#### 2. List
+
+- ArrayList：基于动态数组实现，支持随机访问。
+- Vector：和 ArrayList 类似，但它是线程安全的。
+- LinkedList：基于双向链表实现，只能顺序访问，但是可以快速地在链表中间插入和删除元素。不仅如此，LinkedList 还可以用作栈、队列和双向队列。
+
+#### 3.Queue
+
+- LinkedList：可以用它来实现双向队列。
+- PriorityQueue：基于堆结构实现，可以用它来实现优先队列。
+
+#### Map
+
+- TreeMap：基于红黑树实现。
+- HashMap：基于哈希表实现。
+- HashTable：和 HashMap 类似，但它是线程安全的，这意味着同一时刻多个线程可以同时写入 HashTable 并且不会导致数据不一致。它是遗留类，不应该去使用它。现在可以使用 ConcurrentHashMap 来支持线程安全，并且 ConcurrentHashMap 的效率会更高，因为 ConcurrentHashMap 引入了分段锁。
+- LinkedHashMap：使用双向链表来维护元素的顺序，顺序为插入顺序或者最近最少使用（LRU）顺序。
 
 #### 有顺序的Map实现类
 
